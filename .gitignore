@@ -1,6 +1,6 @@
 /myenv/
 /chroma_store/
 /uploads/
-/__pycache__/
+**/__pycache__/
 .env
 .DS_Store

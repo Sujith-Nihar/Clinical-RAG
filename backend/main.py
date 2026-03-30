@@ -10,17 +10,21 @@ rag_service = RAGService()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def root():
     return {"message": "Clinical RAG API is running.."}
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
@@ -29,14 +33,22 @@ async def upload(file: UploadFile = File(...)):
         return rag_service.upload_document(file.filename, content)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
 
 @app.get("/documents")
 def documents():
-    return {"documents": rag_service.list_documents()}
+    try:
+        return {"documents": rag_service.list_documents()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not fetch documents: {str(e)}")
+
 
 class AskRequest(BaseModel):
     document_id: str
     question: str
+
 
 @app.post("/ask")
 def ask(req: AskRequest):
@@ -46,6 +58,17 @@ def ask(req: AskRequest):
         if str(e) == "Document not found":
             raise HTTPException(status_code=404, detail=str(e))
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ask failed: {str(e)}")
+
+
+@app.delete("/documents/{document_id}")
+def delete_document(document_id: str):
+    try:
+        return rag_service.delete_document(document_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
+
 
 if __name__ == "__main__":
     import uvicorn

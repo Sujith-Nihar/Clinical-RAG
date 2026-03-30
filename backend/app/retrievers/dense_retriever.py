@@ -13,7 +13,7 @@ class DenseRetriever:
         index.add(embeddings)
         return index
 
-    def retrieve(self, query: str, chunks: list[dict], index, k: int = 6, score_threshold: float = 0.30):
+    def retrieve(self, query: str, chunks: list[dict], index, k: int, score_threshold: float):
         q_emb = self.embedding_provider.embed_query(query)
         scores, indices = index.search(q_emb, k)
 
@@ -29,7 +29,6 @@ class DenseRetriever:
                     "score": float(score),
                     "source": chunk["source"],
                     "page": chunk["page"],
-                    "chunk_index_on_page": chunk["chunk_index_on_page"],
                 })
 
         return results

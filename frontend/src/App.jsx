@@ -209,12 +209,14 @@ export default function App() {
                             </div>
 
                             {[
-                                "Structured chunking with metadata",
-                                "Semantic embeddings via sentence-transformers",
-                                "FAISS retrieval with relevance threshold",
-                                "LLM answers only from retrieved context",
-                                "Source chunks shown for evidence review"
-                            ].map((t, i) => (
+                                "Structured chunking with metadata (custom chunker)",
+                                "Embeddings via sentence-transformers (all-MiniLM-L6-v2)",
+                                "Vector storage using ChromaDB (persistent)",
+                                "Dense retrieval using FAISS similarity search",
+                                "Reranking via cross-encoder (ms-marco-MiniLM-L-6-v2)",
+                                "LLM inference via Gemini / Anthropic (provider-based)",
+                                "Grounded responses with source and page citations"
+                                ].map((t, i) => (
                                 <div
                                     key={i}
                                     style={{

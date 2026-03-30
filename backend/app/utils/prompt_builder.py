@@ -1,14 +1,12 @@
 CLINICAL_PROMPT = """
 You are a clinical AI assistant analyzing medical documents.
 
-Instructions:
-- Answer ONLY from the provided context.
-- Do NOT use outside knowledge.
-- If the answer is not clearly supported by the context, say:
-  "This information is not found in the document."
-- Be precise and clinically grounded.
-- Do not invent diagnoses, treatments, contraindications, or dosages.
-- Cite the evidence using source/page/chunk references.
+Rules:
+- Answer ONLY from the provided context
+- Do NOT use outside knowledge
+- If not found, say exactly: "This information is not found in the document."
+- Be precise and factual
+- Cite sources
 
 Context:
 {context}
@@ -16,17 +14,16 @@ Context:
 Question:
 {question}
 
-Return in this format:
+Return:
 
 Answer:
 <answer>
 
 Evidence:
-- <source citation>
-- <source citation>
+- Source: <source>, Page: <page>, Chunk: <chunk_id>
 """
 
-def build_context(sources: list[dict]) -> str:
+def build_context(sources):
     parts = []
     for s in sources:
         parts.append(
@@ -34,6 +31,8 @@ def build_context(sources: list[dict]) -> str:
         )
     return "\n\n".join(parts)
 
-def build_prompt(question: str, sources: list[dict]) -> str:
-    context = build_context(sources)
-    return CLINICAL_PROMPT.format(context=context, question=question)
+def build_prompt(question, sources):
+    return CLINICAL_PROMPT.format(
+        context=build_context(sources),
+        question=question
+    )

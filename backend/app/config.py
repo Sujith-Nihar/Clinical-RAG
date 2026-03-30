@@ -14,7 +14,9 @@ class Settings:
 
     EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
-    TOP_K = int(os.getenv("TOP_K", 6))
+    FINAL_TOP_K = int(os.getenv("TOP_K", 6))
+    VECTOR_DB_DIR: str = "./chroma_db"
+    CHROMA_COLLECTION: str = "rag_docs"
     SCORE_THRESHOLD = float(os.getenv("SCORE_THRESHOLD", 0.30))
 
 settings = Settings()

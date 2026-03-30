@@ -1,31 +1,48 @@
-def chunk_text(text: str, chunk_size: int = 180, overlap: int = 40) -> list[str]:
-    words = text.split()
-    chunks = []
-    start = 0
+import re
+from typing import List, Dict
 
-    while start < len(words):
-        end = start + chunk_size
-        chunk = " ".join(words[start:end]).strip()
-        if chunk:
+def split_into_paragraphs(text: str) -> List[str]:
+    return [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+
+def chunk_paragraphs(paragraphs: List[str], chunk_size: int = 900, overlap: int = 150):
+    chunks = []
+    current = []
+    current_len = 0
+
+    for para in paragraphs:
+        para_len = len(para)
+
+        if current and current_len + para_len > chunk_size:
+            chunk = "\n\n".join(current)
             chunks.append(chunk)
-        start += max(chunk_size - overlap, 1)
+
+            overlap_text = chunk[-overlap:]
+            current = [overlap_text, para]
+            current_len = len(overlap_text) + para_len
+        else:
+            current.append(para)
+            current_len += para_len
+
+    if current:
+        chunks.append("\n\n".join(current))
 
     return chunks
 
-
-def build_chunks(parsed_pages: list[dict]) -> list[dict]:
+def build_chunks(parsed_pages: List[Dict], document_id: str = None) -> List[Dict]:
     all_chunks = []
     chunk_id = 0
 
     for page_obj in parsed_pages:
-        page_chunks = chunk_text(page_obj["text"])
+        paragraphs = split_into_paragraphs(page_obj["text"])
+        page_chunks = chunk_paragraphs(paragraphs)
 
-        for local_idx, chunk in enumerate(page_chunks):
+        for idx, chunk in enumerate(page_chunks):
             all_chunks.append({
                 "chunk_id": chunk_id,
+                "document_id": document_id or page_obj["source"],
                 "source": page_obj["source"],
                 "page": page_obj["page"],
-                "chunk_index_on_page": local_idx,
+                "chunk_index_on_page": idx,
                 "text": chunk,
             })
             chunk_id += 1
