@@ -1,84 +1,62 @@
-# 🤖 HR-RAG: Generative AI-Powered HR Assistant
+# ClinicalQA-RAG
 
-**HR-RAG** is a Generative AI chatbot system designed to answer employee HR-related queries using an intelligent combination of **Retrieval-Augmented Generation (RAG)** and **Large Language Models (LLMs)**. This system enables employees to get immediate answers from internal documents like HR manuals, policies, and benefit guides—without waiting on human intervention.
+ClinicalQA-RAG is a RAG-powered medical document question-answering system. It allows users to upload clinical PDFs or text documents, ask natural language questions, and receive grounded answers with source attribution from the uploaded content.
 
----
-
-## 🧠 Concept
-
-At its core, the HR Assistant leverages the **RAG paradigm**:
-
-- **Retrieval**: Finds relevant content from uploaded HR documents.
-- **Augmentation**: Passes retrieved content into a language model.
-- **Generation**: Produces a fluent, accurate response grounded in the retrieved text.
-
-This ensures that all answers are both contextually rich and based on actual company policies, avoiding hallucinations or vague generalizations.
+The system is designed to make clinical document understanding faster, more transparent, and easier to verify by combining document retrieval with Gemini-powered embeddings and answer generation.
 
 ---
 
-## 🧱 Architecture Overview
+## Features
 
-The system is modular and includes the following stages:
-
-1. **Document Ingestion**  
-   Documents like PDFs, DOCX, or text files are uploaded. These files are loaded, cleaned, and prepared for processing.
-
-2. **Text Chunking**  
-   Long documents are split into smaller overlapping chunks using a custom `TextChunker` to ensure semantic integrity across sections.
-
-3. **Embedding**  
-   Each chunk is converted into a high-dimensional vector representation using a sentence transformer model. These embeddings capture the semantic meaning of each chunk.
-
-4. **Vector Storage (ChromaDB)**  
-   The embeddings are stored in a local vector database (Chroma), allowing for fast similarity-based retrieval later.
-
-5. **Querying (RAG Pipeline)**  
-   - When a user asks a question, it is also embedded.
-   - The most relevant document chunks are retrieved based on vector similarity.
-   - These chunks, along with the user’s question, are fed into an LLM (via Ollama).
-   - The LLM generates a natural language answer grounded in the retrieved content.
-
-6. **Response Generation**  
-   The model provides a final answer, along with references or citations to the source document chunks used for generation—ensuring traceability and reliability.
+- Upload clinical PDF or text documents
+- Automatically extract and chunk document content
+- Generate document embeddings using Gemini Embeddings
+- Store and search document chunks using FAISS
+- Ask natural language questions about uploaded documents
+- Generate grounded answers using Gemini
+- Return source-backed responses with document attribution
+- Simple React frontend for document upload and Q&A
+- FastAPI backend for ingestion, retrieval, and answer generation
 
 ---
 
-## 📁 Project Modules
+## Tech Stack
 
-- `streamlit_app.py`: User interface for uploading documents and chatting
-- `main.py`: Backend script for ingestion (optional)
-- `main_query.py`: Terminal-based query testing (optional)
-- `processor/loader.py`: Loads and parses documents
-- `processor/chunker.py`: Splits text into manageable units
-- `processor/embedder.py`: Generates vector embeddings
-- `processor/vectorstore.py`: Manages the ChromaDB storage
-- `processor/query_engine.py`: Orchestrates retrieval + LLM response
+### Frontend
 
----
+- React
+- Tailwind CSS
+- Vercel for deployment
 
-## 💼 Real-World Relevance
+### Backend
 
-This project aligns with modern enterprise goals:
-- **Efficiency**: Automates responses to frequent HR queries
-- **Cost Savings**: Reduces repetitive workload from HR teams
-- **Improved Experience**: Employees get instant, accurate answers
-- **Auditability**: Answers cite the actual source documents
+- FastAPI
+- Railway for deployment
+- Python
 
+### AI / RAG Pipeline
+
+- Gemini Embedding Model for vector embeddings
+- FAISS for vector search
+- Gemini LLM for answer generation
 
 ---
 
-## 🛠️ Future Extensions
+## Project Structure
 
-- Slack or MS Teams integration
-- Personalized responses using employee context
-- Multi-turn conversation memory
-- Admin dashboard for analytics
-- Document access controls based on roles
-
----
-
-## 📄 License
-
-MIT – Free for use and modification.
-
----
+```text
+ClinicalQA-RAG/
+│
+├── backend/
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── ...
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   ├── .env.example
+│   └── ...
+│
+└── README.md
